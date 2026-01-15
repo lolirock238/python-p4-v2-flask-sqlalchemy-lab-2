@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_migrate import Migrate
 
-from models import db
+# Use package-style import so this module works when imported as
+# `server.app` or via a top-level proxy `app.py`.
+from server.models import db
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -11,6 +13,10 @@ migrate = Migrate(app, db)
 
 db.init_app(app)
 
+# Create all tables when the app is initialized so tests that expect
+# database tables to exist can run without requiring separate migrations.
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def index():

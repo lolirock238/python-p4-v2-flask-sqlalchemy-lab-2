@@ -1,0 +1,3 @@
+from server.app import app, db
+
+__all__ = ["app", "db"]
